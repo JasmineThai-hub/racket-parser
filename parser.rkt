@@ -25,96 +25,75 @@
 ; | break;
 ; | end;
 (define stmt/p
-  (or/p 
-   ; if (boolean) stmt;
-   (do (string/p "if")
-     [ws1 <- (or/p whitespace/p)]
-     (string/p "(")
-     [ws2 <- (or/p whitespace/p)]
-     [cond <- boolean/p]
-     [ws3 <- (or/p whitespace/p)]
-     (string/p ")")
-     [ws4 <- (or/p whitespace/p)]
-     [s <- (log-parser "Stmt: Attempting to parse stmt in IF" stmt/p)]
-     (pure (list 'if cond s)))
-
-   ; read id;
-   (do (string/p "read")
-     [ws1 <- (or/p whitespace/p)]
-     [identifier <- id/p]
-     [ws2 <- (or/p whitespace/p)]
-     (string/p ";")
-     (pure (list 'read identifier)))
-
-
-   ; write expr;
-   (do (string/p "write")
-     [ws1 <- (or/p whitespace/p)]
-     [e <- expr/p]
-     [ws2 <- (or/p whitespace/p)]
-     (string/p ";")
-     (pure (list 'write e)))
-   
-   ; while (boolean) linelist endwhile;
-   (do (string/p "while")
-     [ws1 <- (or/p whitespace/p)]
-     (string/p "(")
-     [ws2 <- (or/p whitespace/p)]
-     [cond <- boolean/p]
-     [ws3 <- (or/p whitespace/p)]
-     (string/p ")")
-     [ws4 <- (or/p whitespace/p)]
-     [ll <- linelist/p]
-     (string/p "endwhile")
-     (pure (list 'while cond ll)))
-
-
-   ; goto id;
+  (or/p
+   (try/p (do (string/p "write")
+            [ws1 <- (or/p whitespace/p)]
+            [e <- (log-parser "Stmt: Attempting to parse expr in WRITE" expr/p)]
+            [ws2 <- (or/p whitespace/p)]
+            (string/p ";")
+            (pure (list 'write e))))
+   (try/p (do (string/p "while")
+            [ws1 <- (or/p whitespace/p)]
+            (string/p "(")
+            [ws2 <- (or/p whitespace/p)]
+            [cond <- (log-parser "Stmt: Attempting to parse boolean/p in while" boolean/p)]
+            [ws3 <- (or/p whitespace/p)]
+            (string/p ")")
+            [ws4 <- (or/p whitespace/p)]
+            [ll <- (log-parser "Stmt: Attempting to parse linelist in while" linelist/p)]
+            [ws5 <- (or/p whitespace/p)]
+            (string/p "endwhile")
+            [ws6 <- (or/p whitespace/p)]
+            (string/p ";")
+            (pure (list 'while cond ll 'endwhile))))
+   (try/p (do (string/p "if")
+            [ws1 <- (or/p whitespace/p)]
+            (string/p "(")
+            [ws2 <- (or/p whitespace/p)]
+            [cond <- boolean/p]
+            [ws3 <- (or/p whitespace/p)]
+            (string/p ")")
+            [ws4 <- (or/p whitespace/p)]
+            [s <- (log-parser "Stmt: Attempting to parse stmt in IF" stmt/p)]
+            (pure (list 'if cond s))))
+   (try/p (do (string/p "read")
+            [ws1 <- (or/p whitespace/p)]
+            [identifier <- id/p]
+            [ws2 <- (or/p whitespace/p)]
+            (string/p ";")
+            (pure (list 'read identifier))))
    (do (string/p "goto")
      [ws1 <- (or/p whitespace/p)]
      [identifier <- id/p]
      [ws2 <- (or/p whitespace/p)]
      (string/p ";")
      (pure (list 'goto identifier)))
-
-
-   ; gosub id;
    (do (string/p "gosub")
      [ws1 <- (or/p whitespace/p)]
-     [identifier <- id/p]
+     [identifier <- (log-parser "Stmt: Attempting to parse id/p in GOSUB!!!" id/p)]
      [ws2 <- (or/p whitespace/p)]
      (string/p ";")
      (pure (list 'gosub identifier)))
-
-   ; return;
-   (do (string/p "return")
-     [ws1 <- (or/p whitespace/p)]
-     (string/p ";")
-     (pure 'return))
-
-   ; break;
-   (do (string/p "break")
-     [ws1 <- (or/p whitespace/p)]
-     (string/p ";")
-     (pure 'break))
-
-   ; end;
-   (do (string/p "end")
-     [ws1 <- (or/p whitespace/p)]
-     (string/p ";")
-     (pure 'end))
-
-  
-   ; id = expr;
-   (do [identifier <- id/p]
-     [ws1 <- (or/p whitespace/p)]
-     (string/p "=")
-     [ws2 <- (or/p whitespace/p)]
-     [e <- expr/p]
-     [ws3 <- (or/p whitespace/p)]
-     (string/p ";")
-     (pure (list 'assign identifier e)))
-   ))
+   (try/p (do (string/p "return")
+            [ws1 <- (or/p whitespace/p)]
+            (string/p ";")
+            (pure 'return)))
+   (try/p (do (string/p "break")
+            [ws1 <- (or/p whitespace/p)]
+            (string/p ";")
+            (pure 'break)))
+   (try/p (do (string/p "end")
+            [ws1 <- (or/p whitespace/p)]
+            (string/p ";")
+            (pure 'end)))
+   (try/p (do [identifier <- id/p]
+            [ws1 <- (or/p whitespace/p)]
+            (string/p "=")
+            [ws2 <- (or/p whitespace/p)]
+            [e <- expr/p]
+            [ws3 <- (or/p whitespace/p)]
+            (string/p ";")
+            (pure (list 'assign identifier e))))))
 
 
 ;;; ~~~ Program Structure ~~~
@@ -122,14 +101,16 @@
 ; label -> id: | epsilon 
 (define label/p 
   (or/p
-    (do [identifier <- (try/p (do [id <- id/p] (string/p ":") (pure id)))] ; try/p so we don't consume token if it's a reserved word (meaning it's a beginning of a statement!)
+    (do [identifier <- (try/p (do [id <- id/p]
+                                (string/p ":")
+                                (pure id)))]
         (pure identifier))
     void/p))
 
 
 ; linetail -> stmt+ | epsilon 
 (define linetail/p
-  (or/p (do [stmts <- (many+/p stmt/p)]
+  (or/p (do [stmts <- (many/p stmt/p)]
           (pure stmts))
         void/p))
 

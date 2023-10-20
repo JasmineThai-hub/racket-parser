@@ -59,12 +59,12 @@
             [ws2 <- (or/p whitespace/p)]
             (string/p ";")
             (pure (list 'read identifier))))
-   (do (string/p "goto")
+   (try/p (do (string/p "goto")
      [ws1 <- (or/p whitespace/p)]
      [identifier <- id/p]
      [ws2 <- (or/p whitespace/p)]
      (string/p ";")
-     (pure (list 'goto identifier)))
+     (pure (list 'goto identifier))))
    (do (string/p "gosub")
      [ws1 <- (or/p whitespace/p)]
      [identifier <- (log-parser "Stmt: Attempting to parse id/p in GOSUB!!!" id/p)]

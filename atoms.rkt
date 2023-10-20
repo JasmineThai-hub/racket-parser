@@ -32,7 +32,9 @@
 
 ; bool-op -> < | > | >= | <= | <> | =
 (define bool-op/p
-  (do [op <- (or/p (string/p "<")
+  (do
+      [ws1 <- (or/p whitespace/p)]
+      [op <- (or/p (string/p "<")
                    (string/p ">")
                    (string/p ">=")
                    (string/p "<=")

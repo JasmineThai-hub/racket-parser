@@ -8,9 +8,6 @@
 
 (provide (all-defined-out))
 
-;;; Note: This parser uses maybe type
-;;; pure == just ==> successful match
-;;; void/p == nothing ==> failed match
 
 ;;; ~~~ Statements ~~~
 

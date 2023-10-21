@@ -103,4 +103,4 @@ numsign -> + | - | epsilon
 - Doesn't allow for statement keywords to be used as a label or substring of a label
 
 ---
-This README.md was generated using ChatGPT and providing the parser.rkt, test_main.rkt, and main.rkt files
+This README.md was generated using ChatGPT and providing the parser.rkt, test_main.rkt, main.rkt, and grammar.txt files

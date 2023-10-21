@@ -19,7 +19,7 @@
         (try/p (string/p "break"))
         (try/p (string/p "end"))))
 
-(define reject-reserved-word/p
+(define reject-reserved-word/p ; parses for the reserved-word with \0 to fail if the id is a reserved word or contains a reserved word
   (do [_ <- reserved-word/p]
       [_ <- (string/p "\0")]
       (pure #f))) ; Doesn't matter what we return, this should always fail.

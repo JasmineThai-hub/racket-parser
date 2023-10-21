@@ -19,6 +19,7 @@
         (try/p (string/p "break"))
         (try/p (string/p "end"))))
 
+;; Since there's no negators in the megaparsack library, I had to implement a workaround that matched the reserved word and failed on a certain character to make reserved words illegal to use as an id (thus a label)
 (define reject-reserved-word/p ; parses for the reserved-word with \0 to fail if the id is a reserved word or contains a reserved word
   (do [_ <- reserved-word/p]
       [_ <- (string/p "\0")]
@@ -28,8 +29,8 @@
 ; id -> [a-zA-Z][a-zA-Z0-9]*
 (define id/p
   (do [not-reserved <- (or/p reject-reserved-word/p (pure #t))]
-      [first-char <- letter/p]
-      [rest-chars <- (many/p (or/p letter/p digit/p))]
+      [first-char <- letter/p] ;; this will succeed then by matching a first character as a letter
+      [rest-chars <- (many/p (or/p letter/p digit/p))] ; rest of the characters as alphanumeric
       (pure (string->symbol (list->string (cons first-char rest-chars))))))
 
 

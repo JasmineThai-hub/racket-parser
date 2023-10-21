@@ -1,0 +1,7 @@
+label1: read A;
+if (A < 5) goto label3;
+write A;
+goto label2;
+label3: write B;
+label2: end;
+$$

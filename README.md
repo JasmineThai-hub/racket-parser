@@ -1,4 +1,4 @@
-# Monadic Racket Parser
+# Racket Parser
 
 ## Overview
 This is a parser written in Racket that can interpret a custom programming language based on the provided grammar. It uses the `megaparsack` and `megaparsack/text` libraries, which provide combinator parsing capabilities.

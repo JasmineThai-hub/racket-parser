@@ -7,12 +7,30 @@
 
 
 ;;; ~~~ Atoms ~~~
+; Define the reserved keywords parser:
+(define reserved-word/p
+  (or/p (try/p (string/p "write")) ; wrapped in try/p so it matches just the word. This allows for write01 to be used as a label
+        (try/p (string/p "while"))
+        (try/p (string/p "if"))
+        (try/p (string/p "read"))
+        (try/p (string/p "goto"))
+        (try/p (string/p "gosub"))
+        (try/p (string/p "return"))
+        (try/p (string/p "break"))
+        (try/p (string/p "end"))))
+
+(define reserved-word-followed-by-unlikely-char/p
+  (do [_ <- reserved-word/p]
+      [_ <- (string/p "\0")]
+      (pure #f))) ; Doesn't matter what we return, this should always fail.
+
+
 ; id -> [a-zA-Z][a-zA-Z0-9]*
 (define id/p
-  (do [first-char <- letter/p]  ; Start with a letter
-      [rest-chars <- (many/p (or/p letter/p digit/p))]  ; Followed by zero or more letters or digits
+  (do [not-reserved <- (or/p reserved-word-followed-by-unlikely-char/p (pure #t))]
+      [first-char <- letter/p]
+      [rest-chars <- (many/p (or/p letter/p digit/p))]
       (pure (string->symbol (list->string (cons first-char rest-chars))))))
-
 
 
 ; numsign -> + | - | epsilon

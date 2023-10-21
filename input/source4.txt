@@ -1,4 +1,0 @@
-read A;
-write B;
-line3: y = ( 5 + 20 ) ;
-$$

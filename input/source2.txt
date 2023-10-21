@@ -1,3 +1,0 @@
-line1: read A;
-goto: write Acas;
-$$

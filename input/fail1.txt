@@ -1,1 +1,0 @@
-read A; write A; label1: _y_=5 $$

@@ -1,2 +1,0 @@
-gotohere: read A ; write B; gotobleh: y=5;
-$$

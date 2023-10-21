@@ -100,3 +100,6 @@ numsign -> + | - | epsilon
 
 - Parsing is done with extensive logging for debugging purposes.
 - The parser expects programs to terminate with "$$" as an end symbol.
+
+---
+This README.md was generated using ChatGPT and providing the parser.rkt, test_main.rkt, and main.rkt files

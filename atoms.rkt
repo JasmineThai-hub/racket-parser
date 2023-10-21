@@ -19,7 +19,7 @@
         (try/p (string/p "break"))
         (try/p (string/p "end"))))
 
-(define reserved-word-followed-by-unlikely-char/p
+(define reserved-word-followed-by-unlikely-char/p ; parses for the reserved-word with \0 to essentially fail if the id is a reserved word.
   (do [_ <- reserved-word/p]
       [_ <- (string/p "\0")]
       (pure #f))) ; Doesn't matter what we return, this should always fail.

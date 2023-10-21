@@ -9,7 +9,7 @@
 ;;; ~~~ Atoms ~~~
 ; Define the reserved keywords parser:
 (define reserved-word/p
-  (or/p (try/p (string/p "write")) ; wrapped in try/p so it matches just the word. This allows for write01 to be used as a label
+  (or/p (try/p (string/p "write"))
         (try/p (string/p "while"))
         (try/p (string/p "if"))
         (try/p (string/p "read"))
@@ -19,7 +19,7 @@
         (try/p (string/p "break"))
         (try/p (string/p "end"))))
 
-(define reserved-word-followed-by-unlikely-char/p ; parses for the reserved-word with \0 to essentially fail if the id is a reserved word.
+(define reserved-word-followed-by-unlikely-char/p
   (do [_ <- reserved-word/p]
       [_ <- (string/p "\0")]
       (pure #f))) ; Doesn't matter what we return, this should always fail.

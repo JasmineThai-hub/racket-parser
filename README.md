@@ -109,4 +109,4 @@ This README.md was generated using ChatGPT and providing the parser.rkt, test_ma
 
 Personal note: I created a parser last semester (Spring 2023) with simpler grammar so I already had an idea of how to go about creating this. Once I researched more about megaparsack, 
 it totally made writing this parser MUCH easier than previously because I didn't have to 'reinvent the wheel'. It also helped debug and streamline development when I separated the parse into atoms, expressions, etc.
-I absolutely loved how clear the grammar shines through by using megaparsack. Overall, I'm pretty happy with my parser, big thanks to ChatGPT for helping me debug and pretty much providing that test_main.
+I absolutely loved how clear the grammar shines through by using megaparsack. Overall, I'm pretty happy with my parser, big thanks to ChatGPT for helping me debug and pretty much providing that test_main and big thanks to Reece for a good reference!

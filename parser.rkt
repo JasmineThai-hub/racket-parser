@@ -113,13 +113,16 @@
 
 ; line ->  label stmt linetail
 (define line/p
-  (do [maybe-label <- (log-parser "Line: Attempting to parse label" label/p)]
-    (if maybe-label
-        (many/p space/p)
-        void/p)
-    [stmt <- (log-parser "Line: Attempting to parse stmt" stmt/p)]
-    [tail <- (log-parser "Line: Attempting to parse linetail" linetail/p)]
-    (pure (list (if maybe-label (list maybe-label) '()) stmt tail))))
+  (or/p 
+    (do [label <- (try/p (do [l <- label/p]
+                            (many/p space/p)
+                            (pure l)))]
+        [stmt <- stmt/p]
+        [tail <- linetail/p]
+        (pure (list (list label) stmt tail)))
+    (do [stmt <- stmt/p] ; No label case
+        [tail <- linetail/p]
+        (pure (list '() stmt tail)))))
 
 
 ; linelist -> line linelist | epsilon 

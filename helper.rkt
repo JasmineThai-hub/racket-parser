@@ -34,7 +34,7 @@
   ; Extract line number and the line with the error from the message source location
   (define source-location (message-srcloc error))
   (define line-number (srcloc-line source-location))
-  (define error-line (list-ref lines (- line-number 1)))
+  (define error-line (list-ref lines (- line-number 1))) ; Racket's list indices are zero-based, which is why we subtract one from the line-number to get the correct index.
 
   ; Error location indicator
   (define (construct-location-indicator start-length indicator-length)

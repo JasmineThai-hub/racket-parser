@@ -22,6 +22,15 @@
 
 ; Error handling
 (define (format-error-message error lines)
+  "Formats the given error message with its source location and line details.
+
+  Given:
+  - error: The error to format.
+  - lines: The lines of the source where the error occurred.
+
+  Returns:
+  A formatted error message string."
+
   ; Extract line number and the line with the error from the message source location
   (define source-location (message-srcloc error))
   (define line-number (srcloc-line source-location))

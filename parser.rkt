@@ -114,14 +114,14 @@
 ; line ->  label stmt linetail
 (define line/p
   (or/p 
-    (do [label <- (try/p (do [l <- label/p]
+    (do [label <- (try/p (do [l <- (log-parser "Line: Attempting to parse label" label/p)]
                             (many/p space/p)
                             (pure l)))]
-        [stmt <- stmt/p]
-        [tail <- linetail/p]
+        [stmt <- (log-parser "Line: Attempting to parse stmt" stmt/p)]
+        [tail <- (log-parser "Line: Attempting to parse linetail" linetail/p)]
         (pure (list (list label) stmt tail)))
-    (do [stmt <- stmt/p] ; No label case
-        [tail <- linetail/p]
+    (do [stmt <- (log-parser "Line: Attempting to parse stmt" stmt/p)] ; No label case
+        [tail <- (log-parser "Line: Attempting to parse linetail" linetail/p)]
         (pure (list '() stmt tail)))))
 
 
